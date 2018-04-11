@@ -7,11 +7,8 @@ import com.amazonaws.mobile.auth.ui.SignInUI;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.AWSStartupHandler;
 import com.amazonaws.mobile.client.AWSStartupResult;
-import com.amazonaws.mobileconnectors.pinpoint.PinpointManager;
 
 public class MainActivity extends AppCompatActivity {
-
-    public static PinpointManager pinpointManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,23 +22,5 @@ public class MainActivity extends AppCompatActivity {
                 signInUI.login(MainActivity.this, NextActivity.class).execute();
             }
         }).execute();
-        //TODO uncomment below code
-//        PinpointConfiguration pinpointConfiguration = new PinpointConfiguration(getApplicationContext(),
-//                AWSMobileClient.getInstance().getCredentialsProvider(),
-//                AWSMobileClient.getInstance().getConfiguration());
-//
-//        pinpointManager = new PinpointManager(pinpointConfiguration);
-//
-//        pinpointManager.getSessionClient().startSession();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // Stop the session and submit the default app started event
-        if (pinpointManager != null) {
-            pinpointManager.getSessionClient().stopSession();
-            pinpointManager.getAnalyticsClient().submitEvents();
-        }
     }
 }

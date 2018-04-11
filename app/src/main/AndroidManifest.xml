@@ -21,6 +21,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".NextActivity" />
+
+        <service
+            android:name=".PushListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
