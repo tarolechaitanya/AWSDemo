@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
                 signInUI.login(MainActivity.this, NextActivity.class).execute();
             }
         }).execute();
+        //TODO uncomment below code
 //        PinpointConfiguration pinpointConfiguration = new PinpointConfiguration(getApplicationContext(),
 //                AWSMobileClient.getInstance().getCredentialsProvider(),
 //                AWSMobileClient.getInstance().getConfiguration());
