@@ -1,0 +1,8 @@
+
+jsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(Î’µ8×Ýä›«,
+Asquid:S1166"%Either log or rethrow this exception.(”ý¾8ÂÃÕ¦«,
+Vsquid:S1444"5Make this "public static pinpointManager" field final(ƒñœ‹ýÿÿÿÿ8Ž†¬£«,
+Ysquid:S1213"8Move this variable to comply with Java Code Conventions.(Úü¶óùÿÿÿÿ8—†á¦«,
+Dsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8ÂÃÕ¦«,
+“"squid:ClassVariableVisibilityCheck"[Make pinpointManager a static final constant or non-public and provide accessors if needed.(ƒñœ‹ýÿÿÿÿ8Ž†¬£«,
+Rsquid:S2696"6Make the enclosing method "static" or remove this set.(„¯ÊÜ8Ž†¬£«,

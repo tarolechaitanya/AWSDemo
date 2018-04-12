@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.amazonaws.mobileconnectors.pinpoint.targeting.notification.NotificationClient;
 import com.google.android.gms.gcm.GcmListenerService;
-import com.iss247.awsdemo.NextActivity;
+import com.iss247.awsdemo.activities.ActNext;
 
 /**
  * Created by chaitanya-iss247 on 11/4/18.
@@ -50,7 +50,7 @@ public class PushListenerService extends GcmListenerService {
         Log.d(LOGTAG, "Data:" + data.toString());
 
         final NotificationClient notificationClient =
-                NextActivity.pinpointManager.getNotificationClient();
+                ActNext.pinpointManager.getNotificationClient();
 
         NotificationClient.CampaignPushResult pushResult =
                 notificationClient.handleGCMCampaignPush(from, data, this.getClass());
