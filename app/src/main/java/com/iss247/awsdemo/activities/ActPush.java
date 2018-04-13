@@ -67,12 +67,17 @@ public class ActPush extends AppCompatActivity {
                 @Override
                 public void run() {
                     try {
-                        String deviceToken =
+                        final String deviceToken =
                                 InstanceID.getInstance(ActPush.this).getToken(
                                         "209550004762",
                                         GoogleCloudMessaging.INSTANCE_ID_SCOPE);
                         Log.e("NotError device token ", deviceToken);
-                        txtDeviceToken.setText(" Device token : " + deviceToken);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                txtDeviceToken.setText(" Device token : " + deviceToken);
+                            }
+                        });
                         pinpointManager.getNotificationClient()
                                 .registerGCMDeviceToken(deviceToken);
                     } catch (Exception e) {
