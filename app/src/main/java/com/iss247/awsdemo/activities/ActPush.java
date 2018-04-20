@@ -3,11 +3,9 @@ package com.iss247.awsdemo.activities;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
@@ -15,10 +13,10 @@ import android.widget.TextView;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointConfiguration;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointManager;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
 import com.iss247.awsdemo.R;
-import com.iss247.awsdemo.services.PushListenerService;
+
+//import com.google.android.gms.gcm.GoogleCloudMessaging;
+//import com.google.android.gms.iid.InstanceID;
 
 /**
  * Created by chaitanya-iss247 on 12/4/18.
@@ -36,14 +34,14 @@ public class ActPush extends AppCompatActivity {
 
 
             Log.d(LOG_TAG, "Received notification from local broadcast. Display it in a dialog.");
-            Bundle data = intent.getBundleExtra(PushListenerService.INTENT_SNS_NOTIFICATION_DATA);
-            String message = PushListenerService.getMessage(data);
+//            Bundle data = intent.getBundleExtra(PushListenerService.INTENT_SNS_NOTIFICATION_DATA);
+//            String message = PushListenerService.getMessage(data);
 
-            new AlertDialog.Builder(ActPush.this)
-                    .setTitle("Push notification")
-                    .setMessage(message)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
+//            new AlertDialog.Builder(ActPush.this)
+//                    .setTitle("Push notification")
+//                    .setMessage(message)
+//                    .setPositiveButton(android.R.string.ok, null)
+//                    .show();
         }
     };
 
@@ -66,23 +64,23 @@ public class ActPush extends AppCompatActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        final String deviceToken =
-                                InstanceID.getInstance(ActPush.this).getToken(
-                                        "209550004762",
-                                        GoogleCloudMessaging.INSTANCE_ID_SCOPE);
-                        Log.e("NotError device token ", deviceToken);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                txtDeviceToken.setText(" Device token : " + deviceToken);
-                            }
-                        });
-                        pinpointManager.getNotificationClient()
-                                .registerGCMDeviceToken(deviceToken);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        final String deviceToken =
+//                                InstanceID.getInstance(ActPush.this).getToken(
+//                                        "209550004762",
+//                                        GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+//                        Log.e("NotError device token ", deviceToken);
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                txtDeviceToken.setText(" Device token : " + deviceToken);
+//                            }
+//                        });
+//                        pinpointManager.getNotificationClient()
+//                                .registerGCMDeviceToken(deviceToken);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
                 }
             }).start();
         }
@@ -101,8 +99,8 @@ public class ActPush extends AppCompatActivity {
         super.onResume();
 
         // register notification receiver
-        LocalBroadcastManager.getInstance(this).registerReceiver(notificationReceiver,
-                new IntentFilter(PushListenerService.ACTION_PUSH_NOTIFICATION));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(notificationReceiver,
+//                new IntentFilter(PushListenerService.ACTION_PUSH_NOTIFICATION));
     }
 
 

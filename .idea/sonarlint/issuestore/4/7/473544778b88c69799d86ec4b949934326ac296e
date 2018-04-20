@@ -1,20 +1,19 @@
 
 lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Ë«¢Çüÿÿÿÿ8ú¶ÈÍ«,
-Dsquid:S1185"(Remove this method to simply inherit it.(Ù«µ§8ºÜÈÍ«,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(‚ö °8ºÜÈÍ«,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(•·üÜ8ÝƒÈÍ«,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÌÒÿà8ÝƒÈÍ«,
 lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¹ù¯´þÿÿÿÿ8ºÜÈÍ«,
-csquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(»èö‡
-lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(áíüÈùÿÿÿÿ8ÝƒÈÍ«,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ûŠ”¾ûÿÿÿÿ8£ƒÉÍ«,
+Isquid:S1185"(Remove this method to simply inherit it.(èüù±ùÿÿÿÿ8ú¶ÈÍ«,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ŸžÐ¨ùÿÿÿÿ8£ƒÉÍ«,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(³«›€8ÝƒÈÍ«,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(š¸Û‡ûÿÿÿÿ8ÝƒÈÍ«,
 Ysquid:S1068"8Remove this unused "notificationReceiver" private field.(Úü¶óùÿÿÿÿ8ºÜÈÍ«,
 Œ"squid:ClassVariableVisibilityCheck"[Make pinpointManager a static final constant or non-public and provide accessors if needed.(ƒñœ‹ýÿÿÿÿ
-lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(„ü—øúÿÿÿÿ8ÝƒÈÍ«,
-gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(•·üÜ8ÝƒÈÍ«,
-gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(‚ö °8ºÜÈÍ«,
-lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ûŠ”¾ûÿÿÿÿ8£ƒÉÍ«,
-lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(š¸Û‡ûÿÿÿÿ8ÝƒÈÍ«,
-Isquid:S1185"(Remove this method to simply inherit it.(èüù±ùÿÿÿÿ8ú¶ÈÍ«,
-gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(³«›€8ÝƒÈÍ«,
-gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÌÒÿà8ÝƒÈÍ«,
-Osquid:S1444"5Make this "public static pinpointManager" field final(ƒñœ‹ýÿÿÿÿ
-lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ŸžÐ¨ùÿÿÿÿ8£ƒÉÍ«,
 Csquid:S1185"(Remove this method to simply inherit it.(¹§ 8ºÜÈÍ«,
+Dsquid:S1185"(Remove this method to simply inherit it.(Ù«µ§8ºÜÈÍ«,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(áíüÈùÿÿÿÿ8ÝƒÈÍ«,
+Osquid:S1444"5Make this "public static pinpointManager" field final(ƒñœ‹ýÿÿÿÿ
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(„ü—øúÿÿÿÿ8ÝƒÈÍ«,
 gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.( »¢ß8£ƒÉÍ«,

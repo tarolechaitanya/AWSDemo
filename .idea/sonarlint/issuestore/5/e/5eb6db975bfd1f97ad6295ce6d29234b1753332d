@@ -1,5 +1,4 @@
 
-}squid:S1450"\Remove the "mCardViewPush" field and declare it as a local variable in the relevant methods.(τ³‚ιόÿÿÿÿ8ÿ”Κ«,
-osquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(»αεύώÿÿÿÿ8ρ³ΠΙ«,
 squid:S1450"`Remove the "mCardViewPinPoint" field and declare it as a local variable in the relevant methods.(¬¦ƒήϊÿÿÿÿ8’ΒΚ«,
 |squid:S1450"`Remove the "mCardViewDynamoDB" field and declare it as a local variable in the relevant methods.(„ά‡‡8ÿ”Κ«,
+}squid:S1450"\Remove the "mCardViewPush" field and declare it as a local variable in the relevant methods.(τ³‚ιόÿÿÿÿ8ÿ”Κ«,
