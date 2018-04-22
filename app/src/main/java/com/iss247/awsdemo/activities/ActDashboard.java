@@ -1,5 +1,6 @@
 package com.iss247.awsdemo.activities;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amazonaws.mobile.auth.core.IdentityManager;
@@ -28,18 +31,29 @@ import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointConfiguration;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointManager;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.iss247.awsdemo.GlideApp;
 import com.iss247.awsdemo.R;
 import com.iss247.awsdemo.services.PushListenerService;
 
+import java.io.File;
+
 public class ActDashboard extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     public final String TAG = ActDashboard.class.getSimpleName();
     public static PinpointManager pinpointManager;
     private TextView mTextSessionDetails;
     private TextView mTextDeviceToken;
+    private Button mButtonDownloadImage;
+    private ImageView mImageViewS3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +163,80 @@ public class ActDashboard extends AppCompatActivity
         mTextSessionDetails.setText("Session yet to start... please wait");
         mTextDeviceToken.setText("Device token not present... please wait");
 
+        mButtonDownloadImage = findViewById(R.id.btnDownloadImage);
+        mButtonDownloadImage.setOnClickListener(this);
+
+        mImageViewS3 = findViewById(R.id.imgViewS3);
+
+    }
+
+    private void downloadWithTransferUtility() {
+
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setTitle("Image from S3");
+        progress.setMessage("Downloading image please wait...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
+// To dismiss the dialog
+
+        TransferUtility transferUtility =
+                TransferUtility.builder()
+                        .context(getApplicationContext())
+                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                        .s3Client(new AmazonS3Client(AWSMobileClient.getInstance().getCredentialsProvider()))
+                        .build();
+
+        TransferObserver downloadObserver =
+                transferUtility.download(
+                        "public/mario.jpg",
+                        new File(getExternalFilesDir(null) + "/files/mario.jpg"));
+
+        // Attach a listener to the observer to get state update and progress notifications
+        downloadObserver.setTransferListener(new TransferListener() {
+
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                if (TransferState.COMPLETED == state) {
+                    // Handle a completed upload
+                    if (progress != null) {
+                        progress.dismiss();
+                        setImage();
+                    }
+                }
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
+                int percentDone = (int) percentDonef;
+
+                Log.d("ActDashboard", "   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%");
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                // Handle errors
+            }
+
+        });
+
+        // If you prefer to poll for the data, instead of attaching a
+        // listener, check for the state and progress in the observer.
+        if (TransferState.COMPLETED == downloadObserver.getState()) {
+            // Handle a completed upload.
+        }
+
+        Log.d("ActDashboard", "Bytes Transferrred: " + downloadObserver.getBytesTransferred());
+        Log.d("ActDashboard", "Bytes Total: " + downloadObserver.getBytesTotal());
+    }
+
+    private void setImage() {
+        File file = new File(getExternalFilesDir(null) + "/files/mario.jpg");
+        GlideApp
+                .with(ActDashboard.this)
+                .load(file)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(mImageViewS3);
     }
 
     @Override
@@ -235,5 +323,13 @@ public class ActDashboard extends AppCompatActivity
         // register notification receiver
         LocalBroadcastManager.getInstance(this).registerReceiver(notificationReceiver,
                 new IntentFilter(PushListenerService.ACTION_PUSH_NOTIFICATION));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnDownloadImage:
+                downloadWithTransferUtility();
+        }
     }
 }
