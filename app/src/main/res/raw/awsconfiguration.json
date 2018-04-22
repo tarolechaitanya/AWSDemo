@@ -20,6 +20,12 @@
       "Region": "us-east-1"
     }
   },
+  "S3TransferUtility": {
+    "Default": {
+      "Bucket": "awsdemo-userfiles-mobilehub-630400948",
+      "Region": "us-east-1"
+    }
+  },
   "DynamoDBObjectMapper": {
     "Default": {
       "Region": "us-east-1"
@@ -33,6 +39,12 @@
   },
   "PinpointTargeting": {
     "Default": {
+      "Region": "us-east-1"
+    }
+  },
+  "UserFileManager": {
+    "Default": {
+      "Bucket": "awsdemo-userfiles-mobilehub-630400948",
       "Region": "us-east-1"
     }
   }

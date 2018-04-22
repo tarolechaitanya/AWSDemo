@@ -13,9 +13,7 @@ import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.AWSStartupHandler;
 import com.amazonaws.mobile.client.AWSStartupResult;
 import com.amazonaws.regions.Regions;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
@@ -24,6 +22,9 @@ import com.iss247.awsdemo.R;
 
 import java.util.HashMap;
 import java.util.Map;
+
+//import com.google.android.gms.auth.api.signin.GoogleSignIn;
+//import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 /**
  * Created by chaitanya-iss247 on 12/4/18.
@@ -36,7 +37,7 @@ public class ActHome extends AppCompatActivity implements View.OnClickListener {
     private CardView mCardViewPush;
     private CardView mCardViewDynamoDB;
 
-    private GoogleSignInClient mGoogleSignInClient;
+//    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class ActHome extends AppCompatActivity implements View.OnClickListener {
                 .requestEmail()
                 .build();
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         SignInButton button = findViewById(R.id.sign_in_button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -71,8 +72,8 @@ public class ActHome extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+//        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+//        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
@@ -83,8 +84,8 @@ public class ActHome extends AppCompatActivity implements View.OnClickListener {
         if (requestCode == RC_SIGN_IN) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
+//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//            handleSignInResult(task);
         }
     }
 

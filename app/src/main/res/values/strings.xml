@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">AWSDemo</string>
     <string name="server_client_id">209550004762-c56niphf9ei2ekpjjgg887cfcoem4bgf.apps.googleusercontent.com</string>
+    <string name="title_activity_act_dashboard">ActDashboard</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>
