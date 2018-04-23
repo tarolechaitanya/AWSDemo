@@ -1,15 +1,17 @@
 package com.iss247.awsdemo.activities;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -48,12 +50,35 @@ import java.io.File;
 public class ActDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
-    public final String TAG = ActDashboard.class.getSimpleName();
     public static PinpointManager pinpointManager;
+    public final String TAG = ActDashboard.class.getSimpleName();
+    private final BroadcastReceiver notificationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "Received notification from local broadcast. Display it in a dialog.");
+
+
+            Log.d(TAG, "Received notification from local broadcast. Display it in a dialog.");
+            Bundle data = intent.getBundleExtra(PushListenerService.INTENT_SNS_NOTIFICATION_DATA);
+            String message = PushListenerService.getMessage(data);
+
+            new AlertDialog.Builder(ActDashboard.this)
+                    .setTitle("Push notification")
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+        }
+    };
+    private int notifyID = 1;
+    private int transferID;
     private TextView mTextSessionDetails;
     private TextView mTextDeviceToken;
-    private Button mButtonDownloadImage;
     private ImageView mImageViewS3;
+    private ImageView mImageViewUploadToS3;
+    private TransferUtility transferUtility;
+    private Notification.Builder notificationBuilder;
+    private Notification notification;
+    private NotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,27 +91,21 @@ public class ActDashboard extends AppCompatActivity
     }
 
     private void getAWSDeviceToken() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final String deviceToken =
-                            InstanceID.getInstance(ActDashboard.this).getToken(
-                                    "209550004762",
-                                    GoogleCloudMessaging.INSTANCE_ID_SCOPE);
-                    Log.e("NotError device token ", deviceToken);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.e(TAG, " device token " + deviceToken);
-                            mTextDeviceToken.setText("Device token : " + deviceToken);
-                        }
-                    });
-                    pinpointManager.getNotificationClient()
-                            .registerGCMDeviceToken(deviceToken);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try {
+                final String deviceToken =
+                        InstanceID.getInstance(ActDashboard.this).getToken(
+                                "209550004762",
+                                GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+                Log.e("NotError device token ", deviceToken);
+                runOnUiThread(() -> {
+                    Log.e(TAG, " device token " + deviceToken);
+                    mTextDeviceToken.setText(String.format(getString(R.string.device_token), deviceToken));
+                });
+                pinpointManager.getNotificationClient()
+                        .registerDeviceToken(deviceToken);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }).start();
     }
@@ -102,14 +121,12 @@ public class ActDashboard extends AppCompatActivity
         // Start a session with Pinpoint
         pinpointManager.getSessionClient().startSession();
 
-        mTextSessionDetails.setText("Session started");
+        mTextSessionDetails.setText(getString(R.string.session_started));
 
 
         AnalyticsEvent event =
                 pinpointManager.getAnalyticsClient().createEvent("UserLoggedInEvent")
                         .withAttribute("screen", "dashboard");
-//                        .withAttribute("DemoAttribute2", "DemoAttributeValue2")
-//                        .withMetric("DemoMetric1", Math.random());
 
         pinpointManager.getAnalyticsClient().recordEvent(event);
     }
@@ -139,15 +156,6 @@ public class ActDashboard extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -160,13 +168,16 @@ public class ActDashboard extends AppCompatActivity
         mTextSessionDetails = findViewById(R.id.txtSessionDetail);
         mTextDeviceToken = findViewById(R.id.txtDeviceToken);
 
-        mTextSessionDetails.setText("Session yet to start... please wait");
-        mTextDeviceToken.setText("Device token not present... please wait");
+        mTextSessionDetails.setText(getString(R.string.session_yet_to_start));
+        mTextDeviceToken.setText(getString(R.string.token_not_present));
 
-        mButtonDownloadImage = findViewById(R.id.btnDownloadImage);
-        mButtonDownloadImage.setOnClickListener(this);
+        Button buttonDownloadImage = findViewById(R.id.btnDownloadImage);
+        Button buttonUploadImage = findViewById(R.id.btnUploadImage);
+        buttonDownloadImage.setOnClickListener(this);
+        buttonUploadImage.setOnClickListener(this);
 
         mImageViewS3 = findViewById(R.id.imgViewS3);
+        mImageViewUploadToS3 = findViewById(R.id.imgViewUploadS3);
 
     }
 
@@ -175,33 +186,34 @@ public class ActDashboard extends AppCompatActivity
         final ProgressDialog progress = new ProgressDialog(this);
         progress.setTitle("Image from S3");
         progress.setMessage("Downloading image please wait...");
+        progress.setIndeterminate(false);
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.setProgress(0);
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
-// To dismiss the dialog
 
-        TransferUtility transferUtility =
+        transferUtility =
                 TransferUtility.builder()
                         .context(getApplicationContext())
                         .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                         .s3Client(new AmazonS3Client(AWSMobileClient.getInstance().getCredentialsProvider()))
                         .build();
 
-        TransferObserver downloadObserver =
+        TransferObserver transferObserver =
                 transferUtility.download(
-                        "public/mario.jpg",
+                        "public/large9.JPG",
                         new File(getExternalFilesDir(null) + "/files/mario.jpg"));
 
         // Attach a listener to the observer to get state update and progress notifications
-        downloadObserver.setTransferListener(new TransferListener() {
+        transferObserver.setTransferListener(new TransferListener() {
 
             @Override
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
                     // Handle a completed upload
-                    if (progress != null) {
-                        progress.dismiss();
-                        setImage();
-                    }
+                    progress.setProgress(100);
+                    progress.dismiss();
+                    setImage();
                 }
             }
 
@@ -209,8 +221,8 @@ public class ActDashboard extends AppCompatActivity
             public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                 float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
                 int percentDone = (int) percentDonef;
-
-                Log.d("ActDashboard", "   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%");
+                progress.setProgress(percentDone);
+                Log.d(TAG, "   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%");
             }
 
             @Override
@@ -220,14 +232,10 @@ public class ActDashboard extends AppCompatActivity
 
         });
 
-        // If you prefer to poll for the data, instead of attaching a
-        // listener, check for the state and progress in the observer.
-        if (TransferState.COMPLETED == downloadObserver.getState()) {
-            // Handle a completed upload.
-        }
+        transferID = transferObserver.getId();
 
-        Log.d("ActDashboard", "Bytes Transferrred: " + downloadObserver.getBytesTransferred());
-        Log.d("ActDashboard", "Bytes Total: " + downloadObserver.getBytesTotal());
+        Log.d(TAG, "Bytes Transferrred: " + transferObserver.getBytesTransferred());
+        Log.d(TAG, "Bytes Total: " + transferObserver.getBytesTotal());
     }
 
     private void setImage() {
@@ -235,8 +243,14 @@ public class ActDashboard extends AppCompatActivity
         GlideApp
                 .with(ActDashboard.this)
                 .load(file)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(mImageViewS3);
+
+        GlideApp
+                .with(ActDashboard.this)
+                .load(file)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(mImageViewUploadToS3);
     }
 
     @Override
@@ -256,21 +270,6 @@ public class ActDashboard extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -279,10 +278,6 @@ public class ActDashboard extends AppCompatActivity
 
         if (id == R.id.nav_sign_out) {
             IdentityManager.getDefaultIdentityManager().signOut();
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -290,28 +285,12 @@ public class ActDashboard extends AppCompatActivity
         return true;
     }
 
-    private final BroadcastReceiver notificationReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "Received notification from local broadcast. Display it in a dialog.");
-
-
-            Log.d(TAG, "Received notification from local broadcast. Display it in a dialog.");
-            Bundle data = intent.getBundleExtra(PushListenerService.INTENT_SNS_NOTIFICATION_DATA);
-            String message = PushListenerService.getMessage(data);
-
-            new AlertDialog.Builder(ActDashboard.this)
-                    .setTitle("Push notification")
-                    .setMessage(message)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
-        }
-    };
-
     @Override
     protected void onPause() {
         super.onPause();
-
+        if (transferUtility != null && transferID != 0) {
+            transferUtility.pause(transferID);
+        }
         // unregister notification receiver
         LocalBroadcastManager.getInstance(this).unregisterReceiver(notificationReceiver);
     }
@@ -319,7 +298,9 @@ public class ActDashboard extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-
+        if (transferUtility != null && transferID != 0) {
+            transferUtility.resume(transferID);
+        }
         // register notification receiver
         LocalBroadcastManager.getInstance(this).registerReceiver(notificationReceiver,
                 new IntentFilter(PushListenerService.ACTION_PUSH_NOTIFICATION));
@@ -330,6 +311,118 @@ public class ActDashboard extends AppCompatActivity
         switch (v.getId()) {
             case R.id.btnDownloadImage:
                 downloadWithTransferUtility();
+                break;
+            case R.id.btnUploadImage:
+                uploadWithTransferUtility();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void uploadWithTransferUtility() {
+
+        TransferUtility uploadTransferUtility =
+                TransferUtility.builder()
+                        .context(getApplicationContext())
+                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                        .s3Client(new AmazonS3Client(AWSMobileClient.getInstance().getCredentialsProvider()))
+                        .build();
+
+        File file = new File(getExternalFilesDir(null) + "/files/mario.jpg");
+        if (file.exists()) {
+            TransferObserver uploadObserver =
+                    uploadTransferUtility.upload(
+                            "uploads/sample_upload.jpg", file);
+
+            // Attach a listener to the observer to get state update and progress notifications
+            uploadObserver.setTransferListener(new TransferListener() {
+
+                @Override
+                public void onStateChanged(int id, TransferState state) {
+                    if (TransferState.COMPLETED == state) {
+                        // Handle a completed upload.
+                        updateProgress(100);
+                    }
+                }
+
+                @Override
+                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                    float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
+                    int percentDone = (int) percentDonef;
+                    updateProgress(percentDone);
+                    Log.d(TAG, "ID:" + id + " bytesCurrent: " + bytesCurrent
+                            + " bytesTotal: " + bytesTotal + " " + percentDone + "%");
+                }
+
+                @Override
+                public void onError(int id, Exception ex) {
+                    // Handle errors
+                }
+
+            });
+
+            Log.d(TAG, "Bytes Transferrred: " + uploadObserver.getBytesTransferred());
+            Log.d(TAG, "Bytes Total: " + uploadObserver.getBytesTotal());
+
+            showNotification();
+        }
+    }
+
+    private void updateProgress(int percentDone) {
+        if (notificationBuilder != null) {
+            notificationBuilder.setProgress(100, percentDone, false);
+
+            if (percentDone == 100) {
+                notification = notificationBuilder
+                        .setOngoing(false)
+                        .setContentText("File uploaded successfully")
+                        .build();
+            } else {
+                notification = notificationBuilder
+                        .setOngoing(true)
+                        .build();
+            }
+
+            notificationManager.notify(notifyID, notification);
+        }
+    }
+
+    private void showNotification() {
+
+        String channelId = "my_channel";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create a notification and set the notification channel.
+            notificationBuilder = new Notification.Builder(ActDashboard.this, channelId)
+                    .setOngoing(true)
+                    .setContentTitle("Upload to S3")
+                    .setSmallIcon(R.drawable.ic_adb_black_24dp)
+                    .setProgress(100, 0, false)
+                    .setContentText("Uploading image to S3, please wait...");
+        } else {
+            notificationBuilder = new Notification.Builder(ActDashboard.this)
+                    .setOngoing(true)
+                    .setContentTitle("Upload to S3")
+                    .setSmallIcon(R.drawable.ic_adb_black_24dp)
+                    .setProgress(100, 0, false)
+                    .setContentText("Uploading image to S3, please wait...");
+        }
+
+        notification = notificationBuilder.build();
+
+        notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Test Channel";
+            // Sets an ID for the notification, so it can be updated.
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel(channelId, name, importance);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+        // Issue the notification.
+        if (notificationManager != null) {
+            notificationManager.notify(notifyID, notification);
         }
     }
 }

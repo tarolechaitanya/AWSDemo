@@ -1,5 +1,20 @@
 
-dsquid:S1192"HDefine a constant instead of duplicating this literal "default" 4 times.(ØÁÎÀ8¡ÈòÍ«,
-Ssquid:S1135"2Complete the task associated to this TODO comment.(İ¨¿şÿÿÿÿ8ÛèçÍ«,
-gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(”›Åˆ8î©çÍ«,
+^squid:S2094"BRemove this empty class, write its code or make it an "interface".(ÄîÖÂ8®Ä—®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(²¾ƒêûÿÿÿÿ8®Ä—®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Àşÿ†ÿÿÿÿÿ8®Ä—®,
+fsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ñ18î©çÍ«,
 gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Å‡èÑ8î©çÍ«,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Üš¨Í8®Ä—®,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ş®¶ş8®Ä—®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(˜†ş§øÿÿÿÿ8®Ä—®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ïÏªâÿÿÿÿÿ8®Ä—®,
+Ssquid:S1135"2Complete the task associated to this TODO comment.(ª‘—’ùÿÿÿÿ8ÛèçÍ«,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(‹ûûéÿÿÿÿÿ8®Ä—®,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(©£È8®Ä—®,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ºÇ°×8®Ä—®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Æˆ¤­úÿÿÿÿ8®Ä—®,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ûå¯Ä8®Ä—®,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÕúÚ×8®Ä—®,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(É™»è8®Ä—®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Å©©¯øÿÿÿÿ8ƒªš®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(æ©Ù øÿÿÿÿ8®Ä—®,

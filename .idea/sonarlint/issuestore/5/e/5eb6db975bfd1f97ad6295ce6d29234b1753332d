@@ -1,4 +1,13 @@
 
-squid:S1450"`Remove the "mCardViewPinPoint" field and declare it as a local variable in the relevant methods.(¬¦ƒŞúÿÿÿÿ8’ÂšÊ«,
+squid:S1450"`Remove the "mCardViewPinPoint" field and declare it as a local variable in the relevant methods.(¬¦ƒŞúÿÿÿÿ8“·–®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¿š€üÿÿÿÿ8¾®™®,
+wsquid:S00116"URename this field "RC_SIGN_IN" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¸µÔ¨ıÿÿÿÿ8ÍŸª–®,
+osquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(»áåışÿÿÿÿ8Ü×·”®,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(˜Î‹Ã8¾½¥–®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(–•¼ÿÿÿÿÿ8Ô‡ÿ—®,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(îÅë8‹šû—®,
 |squid:S1450"`Remove the "mCardViewDynamoDB" field and declare it as a local variable in the relevant methods.(„Ü‡‡8ÿ”œÊ«,
 }squid:S1450"\Remove the "mCardViewPush" field and declare it as a local variable in the relevant methods.(ô³‚éüÿÿÿÿ8ÿ”œÊ«,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(õÈÏ€ıÿÿÿÿ8´ØÛ˜®,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(á„Õ©8¦â²–®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(„ßÜıÿÿÿÿ8‹šû—®,

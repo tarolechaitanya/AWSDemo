@@ -70,3 +70,5 @@ T
 $app/src/main/res/layout/act_push.xml,b/6/b61461d641134ddf2af4d5a331613a9c276c2f4d
 l
 <app/src/main/java/com/iss247/awsdemo/activities/ActHome.java,5/e/5eb6db975bfd1f97ad6295ce6d29234b1753332d
+G
+app/release/output.json,7/c/7cb8114e4eccc7221955a60c256fe2f6fd79480c

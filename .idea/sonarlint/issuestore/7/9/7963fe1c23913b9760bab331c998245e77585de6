@@ -1,7 +1,14 @@
 
-Rsquid:S2696"6Make the enclosing method "static" or remove this set.(Ò¤•˜8ºÓÓÍ«,
-xsquid:S1188"\Reduce this anonymous class number of lines from 22 to at most 20, or make it a named class.(ÉãÃ®8¢ıî«,
-Dsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8¡…²Í«,
 “"squid:ClassVariableVisibilityCheck"[Make pinpointManager a static final constant or non-public and provide accessors if needed.(ƒñœ‹ıÿÿÿÿ8ºÓÓÍ«,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ŸĞ¨ùÿÿÿÿ8‰ÅÅ—®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(áíüÈùÿÿÿÿ8ƒ³Ã—®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ù‚Ù¦şÿÿÿÿ8ƒ³Ã—®,
+Dsquid:S1185"(Remove this method to simply inherit it.(Ù«µ§8Ğ Æ—®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ñ¥ùšøÿÿÿÿ8ƒ³Ã—®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ûŠ”¾ûÿÿÿÿ8¾İÅ—®,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¢ğíˆşÿÿÿÿ8„ªš®,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(æçù8ƒ³Ã—®,
+Rsquid:S2696"6Make the enclosing method "static" or remove this set.(Ò¤•˜8ºÓÓÍ«,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¹ù¯´şÿÿÿÿ8Ğ Æ—®,
+osquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(À……™ÿÿÿÿÿ8ŠÚ‡–®,
 Vsquid:S1444"5Make this "public static pinpointManager" field final(ƒñœ‹ıÿÿÿÿ8ºÓÓÍ«,
-Asquid:S1166"%Either log or rethrow this exception.(”ı¾8¡…²Í«,

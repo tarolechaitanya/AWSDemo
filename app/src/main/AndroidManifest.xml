@@ -65,7 +65,8 @@
         <activity
             android:name=".activities.ActDashboard"
             android:label="@string/title_activity_act_dashboard"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
