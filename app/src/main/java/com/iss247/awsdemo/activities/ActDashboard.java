@@ -23,13 +23,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amazonaws.mobile.auth.core.IdentityManager;
 import com.amazonaws.mobile.auth.core.SignInStateChangeListener;
 import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointConfiguration;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointManager;
 import com.amazonaws.mobileconnectors.pinpoint.analytics.AnalyticsEvent;
@@ -37,15 +42,19 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.iss247.awsdemo.GlideApp;
 import com.iss247.awsdemo.R;
+import com.iss247.awsdemo.models.NewsDO;
 import com.iss247.awsdemo.services.PushListenerService;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class ActDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -73,6 +82,7 @@ public class ActDashboard extends AppCompatActivity
     private int transferID;
     private TextView mTextSessionDetails;
     private TextView mTextDeviceToken;
+    private TextView mTextDynamoData;
     private ImageView mImageViewS3;
     private ImageView mImageViewUploadToS3;
     private TransferUtility transferUtility;
@@ -88,6 +98,47 @@ public class ActDashboard extends AppCompatActivity
         addAWSSignInStateListener();
         configurePinPoint();
         getAWSDeviceToken();
+        loadDynamoDBData();
+    }
+
+    private void loadDynamoDBData() {
+        // Instantiate a AmazonDynamoDBMapperClient
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AWSMobileClient.getInstance().getCredentialsProvider());
+        DynamoDBMapper dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                .build();
+
+        new Thread(() -> {
+
+
+//            NewsDO newsItem = dynamoDBMapper.load(
+//                    NewsDO.class,
+//                    IdentityManager.getDefaultIdentityManager().getCachedUserID(),
+//                    "Article1");
+
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+
+            PaginatedScanList<NewsDO> paginatedq = dynamoDBMapper.scan(NewsDO.class, scanExpression);
+            ArrayList<String> newsItemList = new ArrayList<>();
+
+            for (NewsDO q : paginatedq) {
+                newsItemList.add(q.getArticleId());
+            }
+
+            ListView listView = findViewById(R.id.list);
+
+            String[] values = newsItemList.toArray(new String[newsItemList.size()]);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    R.layout.activity_listview, values);
+
+            runOnUiThread(() -> listView.setAdapter(adapter));
+
+            // Item read
+            Log.d("News Item:", newsItemList.toString());
+
+        }).start();
+
     }
 
     private void getAWSDeviceToken() {
@@ -171,10 +222,15 @@ public class ActDashboard extends AppCompatActivity
         mTextSessionDetails.setText(getString(R.string.session_yet_to_start));
         mTextDeviceToken.setText(getString(R.string.token_not_present));
 
+        mTextDynamoData = findViewById(R.id.txtDynamoData);
+        mTextDynamoData.setText("Dynamo DB data will be displayed here ... ");
+
         Button buttonDownloadImage = findViewById(R.id.btnDownloadImage);
         Button buttonUploadImage = findViewById(R.id.btnUploadImage);
+        Button buttonUploadData = findViewById(R.id.btnUploadData);
         buttonDownloadImage.setOnClickListener(this);
         buttonUploadImage.setOnClickListener(this);
+        buttonUploadData.setOnClickListener(this);
 
         mImageViewS3 = findViewById(R.id.imgViewS3);
         mImageViewUploadToS3 = findViewById(R.id.imgViewUploadS3);
@@ -315,9 +371,36 @@ public class ActDashboard extends AppCompatActivity
             case R.id.btnUploadImage:
                 uploadWithTransferUtility();
                 break;
+            case R.id.btnUploadData:
+                addNewArticle();
+                break;
             default:
                 break;
         }
+    }
+
+    private void addNewArticle() {
+        // Instantiate a AmazonDynamoDBMapperClient
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AWSMobileClient.getInstance().getCredentialsProvider());
+        DynamoDBMapper dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                .build();
+
+
+        final NewsDO newsItem = new NewsDO();
+
+        newsItem.setUserId(IdentityManager.getDefaultIdentityManager().getCachedUserID());
+
+        newsItem.setArticleId("Article" + new Random().nextInt());
+        newsItem.setContent("This is the article content");
+        newsItem.setTitle("Modi is good or bad?");
+
+        new Thread(() -> {
+            dynamoDBMapper.save(newsItem);
+            // Item saved
+            loadDynamoDBData();
+        }).start();
     }
 
     private void uploadWithTransferUtility() {
