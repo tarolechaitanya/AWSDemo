@@ -8,10 +8,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -83,6 +86,7 @@ public class ActDashboard extends AppCompatActivity
     private TextView mTextSessionDetails;
     private TextView mTextDeviceToken;
     private TextView mTextDynamoData;
+    private TextView mTextPlayVideo;
     private ImageView mImageViewS3;
     private ImageView mImageViewUploadToS3;
     private TransferUtility transferUtility;
@@ -218,17 +222,22 @@ public class ActDashboard extends AppCompatActivity
 
         mTextSessionDetails = findViewById(R.id.txtSessionDetail);
         mTextDeviceToken = findViewById(R.id.txtDeviceToken);
+        mTextDynamoData = findViewById(R.id.txtDynamoData);
+        mTextPlayVideo = findViewById(R.id.txtViewOpenS3);
+
+        mTextPlayVideo.setOnClickListener(this);
 
         mTextSessionDetails.setText(getString(R.string.session_yet_to_start));
         mTextDeviceToken.setText(getString(R.string.token_not_present));
-
-        mTextDynamoData = findViewById(R.id.txtDynamoData);
         mTextDynamoData.setText("Dynamo DB data will be displayed here ... ");
 
         Button buttonDownloadImage = findViewById(R.id.btnDownloadImage);
         Button buttonUploadImage = findViewById(R.id.btnUploadImage);
+        Button buttonDownloadVideo = findViewById(R.id.btnDownloadVideo);
         Button buttonUploadData = findViewById(R.id.btnUploadData);
+
         buttonDownloadImage.setOnClickListener(this);
+        buttonDownloadVideo.setOnClickListener(this);
         buttonUploadImage.setOnClickListener(this);
         buttonUploadData.setOnClickListener(this);
 
@@ -257,8 +266,8 @@ public class ActDashboard extends AppCompatActivity
 
         TransferObserver transferObserver =
                 transferUtility.download(
-                        "public/large9.JPG",
-                        new File(getExternalFilesDir(null) + "/files/mario.jpg"));
+                        "public/video1.mp4",
+                        new File(getExternalFilesDir(null) + "/files/video1.mp4"));
 
         // Attach a listener to the observer to get state update and progress notifications
         transferObserver.setTransferListener(new TransferListener() {
@@ -371,12 +380,85 @@ public class ActDashboard extends AppCompatActivity
             case R.id.btnUploadImage:
                 uploadWithTransferUtility();
                 break;
+            case R.id.btnDownloadVideo:
+                downloadVideoWithTransferUtility();
+                break;
+            case R.id.txtViewOpenS3:
+                playVideo();
+                break;
             case R.id.btnUploadData:
                 addNewArticle();
                 break;
             default:
                 break;
         }
+    }
+
+    private void playVideo() {
+        File file = new File(getExternalFilesDir(null) + "/files/samplevideo.mp4");
+        if (file.exists()) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(file.getAbsolutePath()));
+            intent.setDataAndType(Uri.parse(file.getAbsolutePath()), "video/*");
+            startActivity(intent);
+        } else {
+            CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorLayout);
+            Snackbar.make(coordinatorLayout, "Please download video file to play it", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    private void downloadVideoWithTransferUtility() {
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setTitle("Video from S3");
+        progress.setMessage("Downloading video please wait...");
+        progress.setIndeterminate(false);
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.setProgress(0);
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
+
+        transferUtility =
+                TransferUtility.builder()
+                        .context(getApplicationContext())
+                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                        .s3Client(new AmazonS3Client(AWSMobileClient.getInstance().getCredentialsProvider()))
+                        .build();
+
+        TransferObserver transferObserver =
+                transferUtility.download(
+                        "public/samplevideo.mp4",
+                        new File(getExternalFilesDir(null) + "/files/samplevideo.mp4"));
+
+        // Attach a listener to the observer to get state update and progress notifications
+        transferObserver.setTransferListener(new TransferListener() {
+
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                if (TransferState.COMPLETED == state) {
+                    // Handle a completed upload
+                    progress.setProgress(100);
+                    progress.dismiss();
+                    playVideo();
+                }
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
+                int percentDone = (int) percentDonef;
+                progress.setProgress(percentDone);
+                Log.d(TAG, "   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%");
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                // Handle errors
+            }
+
+        });
+
+        transferID = transferObserver.getId();
+
+        Log.d(TAG, "Bytes Transferrred: " + transferObserver.getBytesTransferred());
     }
 
     private void addNewArticle() {

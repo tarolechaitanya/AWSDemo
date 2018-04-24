@@ -1,0 +1,17 @@
+
+msquid:S00116"XRename this field "_creationDate" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(å–ÓL
+nsquid:S00116"SRename this field "_content" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤ìÙ¿ûÿÿÿÿ
+psquid:S00116"URename this field "_articleId" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(å‘í©üÿÿÿÿ
+hsquid:S00116"RRename this field "_userId" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(«Ñàü
+osquid:S00116"TRename this field "_keywords" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’´ñùÿÿÿÿ
+hsquid:S00116"RRename this field "_author" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ù¢¹
+lsquid:S00117"VRename this local variable name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹‹”
+qsquid:S00117"VRename this local variable name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Êúûÿÿÿÿÿ
+qsquid:S00117"VRename this local variable name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¢ Ïúÿÿÿÿ
+lsquid:S00117"VRename this local variable name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¢Ÿç
+osquid:S00116"TRename this field "_category" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ş°—ˆıÿÿÿÿ
+lsquid:S00117"VRename this local variable name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(›àš°
+gsquid:S00116"QRename this field "_title" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÿö‘ä
+lsquid:S00117"VRename this local variable name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(™úé·
+qsquid:S00117"VRename this local variable name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(—´Úâşÿÿÿÿ
+lsquid:S00117"VRename this local variable name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(÷¹Œ¼
