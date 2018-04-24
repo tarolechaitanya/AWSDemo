@@ -99,7 +99,7 @@
                     android:layout_width="200dp"
                     android:layout_height="200dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_image_black_24dp"
+                    android:src="@drawable/no_image_available"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnDownloadImage" />
@@ -153,7 +153,7 @@
                     android:layout_width="200dp"
                     android:layout_height="200dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_image_black_24dp"
+                    android:src="@drawable/no_image_available"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnUploadImage" />
